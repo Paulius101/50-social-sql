@@ -110,6 +110,26 @@ app.init = async () => {
     for (const entry of rows) {
         console.log(`${++number}. ${entry.text} - ${entry.count} time;`);
     }
+
+    //6
+    async function termFinder(term) {
+        sql = 'SELECT `comments`.`text` as text, `comments`.`date` as time\
+    FROM `comments`\
+    WHERE text LIKE "%' + term + ' %" ';
+        [rows] = await connection.execute(sql);
+        if (rows.length === 0) {
+            console.error(`Nerasta komentaru`);
+        }
+        else {
+            let frazes = 0;
+            console.log(`Comments with search term "${term}":`);
+            for (const entry of rows) {
+                console.log(`${++frazes}. ${entry.text} ${formatDate(entry.time)}`);
+            }
+        }
+    }
+    await termFinder('nice');
+    await termFinder('lol');
 }
 
 
