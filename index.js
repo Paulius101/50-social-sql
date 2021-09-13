@@ -87,10 +87,28 @@ app.init = async () => {
     ORDER BY `users`.`firstname` DESC';
     [rows] = await connection.execute(sql);
     let j = 0;
-    console.log(rows);
+    // console.log(rows);
     console.log(`User's relationships:`);
     for (const entry of rows) {
         console.log(`${++j}. ${firstCapital(entry.firstname)} is following ${firstCapital(entry.friendName)} (since ${formatDate(entry.follow_date)})`);
+    }
+
+
+    // 5
+    sql = 'SELECT `like_options`.`text`,\
+    COUNT(`posts_likes`.`like_option_id`) as count \
+    FROM `like_options`\
+    LEFT JOIN `posts_likes`\
+    ON `posts_likes`.`like_option_id` = `like_options`.`id`\
+    GROUP BY `like_options`.`id`\
+    ORDER BY `count` DESC';
+
+    [rows] = await connection.execute(sql);
+    console.log(rows);
+    console.log(`Like options statistics:`);
+    let number = 0;
+    for (const entry of rows) {
+        console.log(`${++number}. ${entry.text} - ${entry.count} time;`);
     }
 }
 
