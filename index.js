@@ -130,6 +130,29 @@ app.init = async () => {
     }
     await termFinder('nice');
     await termFinder('lol');
+
+    //7
+    async function postFinder(userID) {
+        sql = 'SELECT `posts`.`text` as text, MAX(`posts`.`date`) as time, \
+        posts.user_id, (SELECT users.firstname FROM users WHERE posts.user_id = users.id ) as name\
+    FROM `posts`\
+    WHERE id = '+ userID + '  ';
+        [rows] = await connection.execute(sql);
+        console.log(rows);
+        for (const entry of rows) {
+            if (entry.length === 0) {
+                console.error(`Seems like ${entry.name} hasn't posted yet.`);
+            }
+            else {
+
+                console.log(`Latest post from ${entry.name}:`);
+                console.log(`'${entry.text}' ${formatDate(entry.time)}.`);
+
+            }
+        }
+    }
+    // await postFinder(1);
+    await postFinder(2);
 }
 
 
