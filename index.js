@@ -133,26 +133,28 @@ app.init = async () => {
 
     //7
     async function postFinder(userID) {
-        sql = 'SELECT `posts`.`text` as text, MAX(`posts`.`date`) as time, \
+        sql = 'SELECT posts.text as text, posts.date as time, \
         posts.user_id, (SELECT users.firstname FROM users WHERE posts.user_id = users.id ) as name\
-    FROM `posts`\
-    WHERE id = '+ userID + '  ';
+    FROM posts\
+    WHERE user_id = '+ userID + '\
+    GROUP BY time\
+    ORDER BY time DESC';
         [rows] = await connection.execute(sql);
         console.log(rows);
-        for (const entry of rows) {
-            if (entry.length === 0) {
-                console.error(`Seems like ${entry.name} hasn't posted yet.`);
-            }
-            else {
 
-                console.log(`Latest post from ${entry.name}:`);
-                console.log(`'${entry.text}' ${formatDate(entry.time)}.`);
-
-            }
+        if (rows.length === 0) {
+            console.error(`Seems like user hasn't posted yet.`);
         }
+        else {
+
+            console.log(`Latest post from ${rows[0].name}:`);
+            console.log(`'${rows[0].text}' ${formatDate(rows[0].time)}.`);
+
+        }
+
     }
     // await postFinder(1);
-    await postFinder(2);
+    await postFinder(6);
 }
 
 
