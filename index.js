@@ -137,10 +137,9 @@ app.init = async () => {
         posts.user_id, (SELECT users.firstname FROM users WHERE posts.user_id = users.id ) as name\
     FROM posts\
     WHERE user_id = '+ userID + '\
-    GROUP BY time\
     ORDER BY time DESC';
         [rows] = await connection.execute(sql);
-        console.log(rows);
+        // console.log(rows);
 
         if (rows.length === 0) {
             console.error(`Seems like user hasn't posted yet.`);
@@ -153,8 +152,8 @@ app.init = async () => {
         }
 
     }
-    // await postFinder(1);
-    await postFinder(6);
+    await postFinder(1);
+    await postFinder(5);
 }
 
 
